@@ -1,4 +1,8 @@
-.main{
-  height: 100%;
-  width: 100%;
+#editor-main{
+  height: 400px;
+  width: 400px;
+  border: 5px solid black;
+  background-color: black;
+  color: white;
+  caret-color: white;
 }
