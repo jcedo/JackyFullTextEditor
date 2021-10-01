@@ -6,3 +6,7 @@
   color: white;
   caret-color: white;
 }
+
+#editor-main p{
+  margin: 0;
+}

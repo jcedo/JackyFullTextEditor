@@ -1,4 +1,9 @@
-const tagRegExp = new RegExp(/<(?<tagName>.+)>(?<content>.*?)<\/\1>/, "g");
+/**
+ * g mean global
+ * the regExp will keep a lastIndex, which make a regExp false one time and true one time
+ */
+
+const tagRegExp = new RegExp(/<(?<tagName>.+)>(?<content>.*?)<\/\1>/);
 
 class Translator{
   constructor(){
@@ -22,11 +27,11 @@ class Translator{
  */
 function text2Html(str){
                               //  <p>a</p>b
-  // const htmlRegExp = new RegExp(/[^<](?<content>.+?)$/);
+  const htmlRegExp = new RegExp(/[^<](?<content>.+?)$/);
   const lastIndex = str.lastIndexOf(">");
   console.log(lastIndex);
-  // const res = str.match(htmlRegExp);
-  // console.log(res);
+  const res = str.match(htmlRegExp);
+  console.log(res);
 }
 
 /**
