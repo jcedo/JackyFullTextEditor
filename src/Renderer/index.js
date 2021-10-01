@@ -87,6 +87,7 @@ class Renderer {
       let newRange = document.createRange();
       const target = targetNode(self._element);
       // newRange.selectNode(target, target.length);
+      // You need to setStart on the #text dom
       newRange.setStart(target, target.length);
       newRange.collapse(true);
       selection.addRange(newRange);
