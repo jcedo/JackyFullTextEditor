@@ -14,71 +14,33 @@ import duplexContenteditable from "./ContentEditableListener.js";
  *    2. 形成一个事件，传递到一些方法中去
  *    3. 
  */
+
+/**
+ * Collector
+ *    _html
+ *    _prevHtml
+ */
 class Collector{
   constructor(element){
-    if(!element instanceof HTMLElement){
-      throw new TypeError("[Collector Construction]: You must create Collector with HTMLElement");
-    }
-    if(element.tagName !== "DIV"){
-      throw new TypeError("[Collector Construction]: Please use DIV element to avoid some bug");
-    }
-    if(element.contentEditable !== "true"){
-      console.log(element.contentEditable);
-      throw new TypeError("[Collector Construction]: The contentEditable of element is false");
-    }
-    this._state = {
-      innerHtml: null,
-      cursor: null,
-      selection: null
-    }
-    this._prevState = {
-      innerHtml: null,
-      cursor: null,
-      selection: null
-    }
-
+    this._html = null;
+    this._prevHtml = null;
     this._inputEvent = null;
     const self = this;
     duplexContenteditable(element, function(inputEvent){
       console.log('duplexContenteditable');
       self.updateInnerHtml(this.innerHTML);
       self._inputEvent && self._inputEvent(this.innerHTML)
-      // send a event
-      // console.log(window.getSelection());
     })
   }
 
   updateInnerHtml(curHtml){
-    this._prevState.innerHtml = this._state.innerHtml;
-    this._state.innerHtml = curHtml;
+    this._prevHtml = this._html;
+    this._html = curHtml;
   }
 
   set inputEvent(fn){
     this._inputEvent = fn;
   }
-
-  // set text(text){
-  //   this._prevText = this._text;
-  //   this._text = text;
-  // }
-
-  // get text(){
-  //   return this._text;
-  // }
-
-  // bindDOM(element) {
-  //   const self = this;
-  //   duplexContenteditable(element, function(mutationEvent){
-  //     self._prevText = self._text;
-  //     self._text = this.innerHTML;
-  //     self._inputEvent(self._text, self._prevText);
-  //     // console.log(window.getSelection());
-  //   })
-  // }
-
-  // set onInput(fn){
-  //   this._event['onInput'] = fn;
-  // }
 }
 
 export default Collector;

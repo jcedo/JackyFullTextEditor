@@ -1,6 +1,7 @@
 import './index.css';
-import Collector from './Collector/index';
-import Renderer from './Renderer/index'
+import Editor from './Editor/index';
+// import Collector from './Collector/index';
+// import Renderer from './Renderer/index'
 import Translator,{ text2Html, html2Json, trimText} from './Translator/index.js';
 import { EDITOR_MAIN } from './utils/constant.js';
 
@@ -8,9 +9,9 @@ var element = document.createElement('div');
 element.setAttribute("contenteditable", true);
 element.setAttribute("id", EDITOR_MAIN);
 
-var collector = new Collector(element);
-var renderer = new Renderer(element);
-renderer.bindCollector(collector);
+// var collector = new Collector(element);
+// var renderer = new Renderer(element);
+// renderer.bindCollector(collector);
 // collector.bindDOM(element);
 // collector.onInput = function(curValue, prevValue) {
 //   // console.log(prevValue);
@@ -37,5 +38,4 @@ renderer.bindCollector(collector);
 // var translator = new Translator();
 document.body.appendChild(element);
 
-const html = "aa<p>a</p>";
-console.log(trimText(html));
+const editor = new Editor(element);

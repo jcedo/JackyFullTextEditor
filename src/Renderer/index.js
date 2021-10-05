@@ -50,22 +50,15 @@ function targetNode(node){
   if(children && children.length){
     return targetNode(node.children[children.length - 1]);
   }else{
+    if(node.childNodes){
+      return node.childNodes[0];
+    }
     return node;
   }
 }
 
 class Renderer {
   constructor(element) {
-    if (!element instanceof HTMLElement) {
-      throw new TypeError("[Collector Construction]: You must create Collector with HTMLElement");
-    }
-    if (element.tagName !== "DIV") {
-      throw new TypeError("[Collector Construction]: Please use DIV element to avoid some bug");
-    }
-    if (element.contentEditable !== "true") {
-      console.log(element.contentEditable);
-      throw new TypeError("[Collector Construction]: The contentEditable of element is false");
-    }
     this._element = element;
   }
 

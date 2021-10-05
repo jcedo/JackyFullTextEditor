@@ -41,14 +41,14 @@ function text2Html(str){
  */
 function trimText(html){
   if(!tagRegExp.test(html)){
-    return `<p>${html}</p>`;
+    return `<p><span>${html}</span></p>`;
   }
   html.trim();
   const startTextRegExp = /^([^<]+?)(?=<)/;
   const endTextRegExp = /(?<=>)([^>]+?)$/;
   return html
-    .replace(startTextRegExp, "<p>$1</p>")
-    .replace(endTextRegExp, "<p>$1</p>");
+    .replace(startTextRegExp, "<p><span>$1</span></p>")
+    .replace(endTextRegExp, "<p><span>$1</span></p>");
 }
 
 /**
@@ -57,13 +57,26 @@ function trimText(html){
  * @param {string} html
  * @return {object} 
  */
-function html2Json(html){
+function html2Json(html, first = false){
   const tagRegExp = new RegExp(/<(?<tagName>.+)>(?<content>.*?)<\/\1>/, "g");
-  html = trimText(html);
-  const reses = html.matchAll(tagRegExp);
-  for(let res of reses) {
-    console.log(res);
+  if(first){
+    html = trimText(html);
   }
+  const reses = html.matchAll(tagRegExp);
+  const resList = [];
+  for(let res of reses) {
+    resList.push({
+      tagName: res?.groups.tagName,
+      content: html2Json(res?.groups.content)
+    })
+  }
+  if(!resList.length){
+    return {
+      tagName: "text",
+      content: html
+    }
+  }
+  return resList;
 }
 
 export { text2Html, html2Json, trimText };
