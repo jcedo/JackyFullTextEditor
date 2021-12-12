@@ -3,12 +3,18 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: path.resolve(__dirname, "src", "index.js"),
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "src")
+    }
+  },
   mode: "development",
+  devtool: "source-map",
   module: {
     rules: [
       {
