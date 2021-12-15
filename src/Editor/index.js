@@ -1,7 +1,30 @@
-// import Collector from '../Collector/index';
-// import Renderder from '../Renderer/index';
-import duplexContenteditable from "../Collector/ContentEditableListener";
-import { text2Html, html2Json, trimText } from '../Translator/index.js';
+import duplexContenteditable from "@/Collector/ContentEditableListener";
+import { text2Html, html2Json, trimText, json2Html } from '@/Translator/index.js';
+
+class Storage{
+  constructor(){
+    this._domArray = [];
+    this._selection = null;
+  }
+  
+  // DOM construction
+  set domArray(domArray){
+    this._domArray = domArray;
+  }
+
+  get domArray(){
+    return this._domArray;
+  }
+
+  // selection
+  set selection(s){
+    this._selection = s;
+  }
+
+  get selection(){
+    return this._selection;
+  }
+}
 
 /**
  * Editor
@@ -24,34 +47,43 @@ class Editor{
       throw new TypeError("[Collector Construction]: The contentEditable of element is false");
     }
     this.element = element;
+    this._storage = new Storage();
     const self = this;
-    // this._collector = new Collector(element);
-    // this._renderer = new Renderder(element);
+
+    // add Event Listener
     duplexContenteditable(element, function(){
-      // const text = self.element.innerHTML;
-      // const selection = window.getSelection();
-      // const range = selection.getRangeAt(0);
-      // let textNode = range.startContainer;
-      // let rangeStartOffset = range.startOffset;
-      // console.log(rangeStartOffset);
-      // const html = trimText(text);
-      // // will clear the range when we set the new html
-      // self.element.innerHTML = html;
+      // html2Json
+      const res = html2Json(self.element.innerHTML, true);
+      console.log(res);
+      const selection = window.getSelection()
       
-      // selection.removeAllRanges();
+      // valid and format the html
+
+      // store
+      self._storage.domArray = res;
+      self._storage.selection = selection;
+
+      // json2Html
+      const resHtml = json2Html(res);
+      console.log(resHtml);
+      self.element.innerHTML = resHtml;
       
-      // // need to create a new range
-      // let newRange = document.createRange();
-      // const target = targetNode(self.element);
-      // // newRange.selectNode(target, target.length);
-      // // You need to setStart on the #text dom
-      // newRange.setStart(target, target.length);
-      // newRange.collapse(true);
-      // selection.addRange(newRange);
-      console.log(html2Json(self.element.innerHTML, true));
+      
+      if(selection.rangeCount > 0){
+        selection.removeAllRanges();
+      }
+      // const children = self.element.children;
+      // const range = document.createRange()
+      // range.selectNode(children[children.length-1]);
+      // range.collapse()
+      // selection.addRange(range);
+      // self.element.setSelection(1,1);
     })
   }
+
+  
 }
+
 
 function targetNode(node){
   let children = node.children;

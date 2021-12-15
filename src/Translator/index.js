@@ -3,7 +3,7 @@
  * the regExp will keep a lastIndex, which make a regExp false one time and true one time
  */
 
-const tagRegExp = new RegExp(/<(?<tagName>.+)>(?<content>.*?)<\/\1>/);
+// const tagRegExp = new RegExp(/<(?<tagName>.+)>(?<content>.*?)<\/\1>/);
 
 class Translator{
   constructor(){
@@ -52,32 +52,64 @@ function trimText(html){
 }
 
 /**
- * 
+ * Will flatten the html tree in array, rerender to DOM by level key
  * @function text2Json
  * @param {string} html
  * @return {object} 
  */
-function html2Json(html, first = false){
-  const tagRegExp = new RegExp(/<(?<tagName>.+)>(?<content>.*?)<\/\1>/, "g");
+
+var tempList = [];
+
+const tagRegExp = new RegExp(/<(?<tagName>.+)>(?<content>.*?)<\/\1>/, "g");
+
+function html2Json(html, first = false, level = 0){
   if(first){
+    tempList = [];
     html = trimText(html);
   }
   const reses = html.matchAll(tagRegExp);
-  const resList = [];
-  for(let res of reses) {
-    resList.push({
-      tagName: res?.groups.tagName,
-      content: html2Json(res?.groups.content)
-    })
+  // Indicate whether match tagName
+  let flag = true;
+  for(let res of reses){
+    flag = false;
+    let matchTagName = res?.groups?.tagName;
+    let matchContent = res?.groups?.content;
+    tempList.push({ tagName: matchTagName, level })
+    html2Json(matchContent, false, level+1)
   }
-  if(!resList.length){
-    return {
-      tagName: "text",
-      content: html
-    }
+  if(flag){
+    tempList.push({ tagName: "text", content: html, level })
   }
-  return resList;
+  return tempList;
 }
 
-export { text2Html, html2Json, trimText };
+/**
+ * json2Html
+ * @param {Array<{tagName, content, level}>} domArray
+ * @param {boolean} first 
+ */
+
+function json2Html(domArray, first){
+  let html = "";
+  const len = domArray.length;
+  let i = 0;
+  while(i < len){
+    const tag = domArray[i].tagName;
+    if(i === len - 1){
+      break;
+    }
+    const curLevel = domArray[i]?.level
+    const nextLevel = domArray[i+1]?.level
+    if(curLevel > nextLevel){
+      // 补后面的tag,加入内容
+    }else if(curLevel === nextLevel){
+      // 补自己的tag
+    }else{
+      // 继续拼接前面的tag
+    }
+  }
+  return html;
+}
+
+export { text2Html, html2Json, trimText, json2Html };
 export default Translator;
